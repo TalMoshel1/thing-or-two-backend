@@ -27,9 +27,4 @@ export class SongsController {
     return this.songs.list(query);
   }
 
-  @Get('table')
-  async table() {
-    const items = await this.songs.listOrderedByBand();
-    return { total: items.length, data: items };
-  }
 }

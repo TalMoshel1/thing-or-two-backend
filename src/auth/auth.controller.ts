@@ -17,7 +17,6 @@ export class AuthController {
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // pass res directly to the service (service handles cookie)
     return this.auth.register(dto.email, dto.password, res);
   }
 
@@ -27,13 +26,8 @@ export class AuthController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    // pass res directly to the service (service handles cookie)
     return this.auth.login(dto.email, dto.password, res);
   }
 
-  @Get('validate')
-  async validate(@Req() req: Request) {
-    // protected by JwtAuthGuard — req.user populated by JwtStrategy
-    return req.user || null;
-  }
+
 }
