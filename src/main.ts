@@ -32,7 +32,7 @@ async function bootstrap() {
   setupSwagger(app);
 
   // Redirect root to docs
-  app.getHttpAdapter().get('/', (req, res) => res.redirect('/docs'));
+  // app.getHttpAdapter().get('/', (req, res) => res.redirect('/docs'));
 
   const port = process.env.PORT || 3000;
 

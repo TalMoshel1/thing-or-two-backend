@@ -12,17 +12,7 @@ export class AuthService {
   ) {}
 
   /** 🔒 Sets secure cookie for JWT */
-  private setAuthCookie(res: Response, token: string) {
-    const isProd = process.env.NODE_ENV === 'production';
 
-    res.cookie('jwt', token, {
-      httpOnly: true, // prevents access via JS
-      secure: isProd, // HTTPS only in production
-      sameSite: isProd ? 'strict' : 'lax', // needed for cross-port localhost dev
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      path: '/', // available across the app
-    });
-  }
 
   async validateUser(email: string, plainPass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
@@ -42,8 +32,7 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     const token = this.jwtService.sign(payload);
 
-    this.setAuthCookie(res, token);
-    return { message: 'Login successful', user: { id: user.id, email: user.email } };
+    return { message: 'Login successful', user: { id: user.id, email: user.email, token: token } };
   }
 
   async register(email: string, password: string, res: Response) {
@@ -51,7 +40,6 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     const token = this.jwtService.sign(payload);
 
-    this.setAuthCookie(res, token);
-    return { message: 'Registration successful', user: { id: user.id, email: user.email } };
+    return { message: 'Registration successful', user: { id: user.id, email: user.email, token: token  } };
   }
 }
