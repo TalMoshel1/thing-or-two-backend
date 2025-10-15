@@ -11,10 +11,9 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // ✅ Must come BEFORE global prefix and before static assets
   app.enableCors({
-    origin: 'http://localhost:5173', // ← single origin, not wildcard
-    credentials: true,               // ← allow cookies
+    origin: 'http://localhost:5173',
+    credentials: true,             
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });
 
@@ -31,12 +30,9 @@ async function bootstrap() {
 
   setupSwagger(app);
 
-  // Redirect root to docs
-  // app.getHttpAdapter().get('/', (req, res) => res.redirect('/docs'));
 
   const port = process.env.PORT || 3000;
 
-  // Serve static client if you build it later
   app.use(express.static(join(__dirname, '..', 'client')));
 
   await app.listen(port);
