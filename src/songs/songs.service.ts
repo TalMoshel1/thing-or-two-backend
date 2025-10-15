@@ -65,39 +65,40 @@ export class SongsService {
   }
 
   /**
-   * 🧩 Fetch songs with pagination, sorting, and optional search.
+   * Fetch songs with pagination, sorting, and optional search.
    * Matches /api/v1/songs GET
    */
-  async list(params: {
-    page?: number;
-    limit?: number;
-    sortBy?: 'name' | 'band' | 'year';
-    order?: 'ASC' | 'DESC';
-    q?: string;
-  }) {
-    const { page = 1, limit = 20, sortBy = 'band', order = 'ASC', q } = params;
-    this.logger.log(
-      `📊 Fetching songs | page=${page}, limit=${limit}, sortBy=${sortBy}, order=${order}, q=${q}`,
-    );
+async list(params: {
+  page?: number;
+  limit?: number;
+  sortBy?: 'name' | 'band' | 'year';
+  order?: 'ASC' | 'DESC';
+  q?: string;
+}) {
+  const { page = 1, limit = 20, sortBy = 'band', order = 'ASC', q } = params;
+  this.logger.log(
+    `📊 Fetching songs | page=${page}, limit=${limit}, sortBy=${sortBy}, order=${order}, q=${q}`,
+  );
 
-    const where = q
-      ? [
-          { name: ILike(`%${q.toLowerCase()}%`) },
-          { band: ILike(`%${q.toLowerCase()}%`) },
-          ...(Number.isFinite(Number(q)) ? [{ year: Number(q) }] : []),
-        ]
-      : {};
+  const qb = this.repo.createQueryBuilder('song');
 
-    const [items, total] = await this.repo.findAndCount({
-      where,
-      order: { [sortBy]: order },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    this.logger.log(`✅ Found ${items.length} songs (total: ${total})`);
-    return { page, limit, total, items };
+  if (q) {
+    qb.where('LOWER(song.name) ILIKE :q', { q: `%${q.toLowerCase()}%` })
+      .orWhere('LOWER(song.band) ILIKE :q', { q: `%${q.toLowerCase()}%` })
+      // ✅ allows partial numeric matches like '19' matching 1980, 1990 etc.
+      .orWhere("CAST(song.year AS TEXT) ILIKE :q", { q: `%${q}%` });
   }
+
+  qb.orderBy(`song.${sortBy}`, order)
+    .skip((page - 1) * limit)
+    .take(limit);
+
+  const [items, total] = await qb.getManyAndCount();
+
+  this.logger.log(`✅ Found ${items.length} songs (total: ${total})`);
+  return { page, limit, total, items };
+}
+
 
   async listOrderedByBand() {
     this.logger.log('📊 Fetching all songs ordered by band...');

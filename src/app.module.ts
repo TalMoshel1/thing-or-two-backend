@@ -22,7 +22,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
     BootstrapModule,
   ],
   providers: [
-    { provide: APP_GUARD, useClass: JwtAuthGuard }, // ⛔ Global guard
+    { provide: APP_GUARD, useClass: JwtAuthGuard }, 
   ],
 })
 export class AppModule {}

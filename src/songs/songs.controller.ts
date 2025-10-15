@@ -9,7 +9,7 @@ import { SongsService } from './songs.service';
 export class SongsController {
   constructor(private songs: SongsService) {}
 
-  @Post('import2')
+  @Post('import')
   async import() {
     console.log('🔥 Controller import() reached');
 
