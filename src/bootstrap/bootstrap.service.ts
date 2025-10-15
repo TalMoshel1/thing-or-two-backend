@@ -17,12 +17,10 @@ export class BootstrapService implements OnApplicationBootstrap {
     this.logger.log('🚀 Starting CSV import process...');
 
     try {
-      // ✅ 1. Truncate table before importing
       this.logger.log('🧹 Truncating songs table...');
       await this.dataSource.query('TRUNCATE TABLE songs RESTART IDENTITY CASCADE');
       this.logger.log('✅ Songs table truncated successfully.');
 
-      // ✅ 2. Import from CSV
       const result = await this.songsService.importFromCsv(csvPath);
       this.logger.log('✅ CSV import complete: ' + JSON.stringify(result));
     } catch (err) {
