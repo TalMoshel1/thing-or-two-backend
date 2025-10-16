@@ -11,4 +11,16 @@ This project provides a robust API and frontend with the following features:
 - **Swagger Documentation:** Interactive API documentation is available at [`/docs`](./docs), allowing you to explore and test endpoints easily.
 - **Frontend Technologies:** The frontend is built using **MUI** for UI components, **Redux** for state management, and **React Context** for sharing data across components.
 
-Feel free to explore the API and refer to the Swagger documentation for detailed information about each endpoint.
+To run the docker package:
+
+Clone the backend repository.
+
+Run:
+
+    docker build . -t tal-music
+
+    docker-compose up
+
+Wait around 30 seconds, then open http://localhost:3000
+
+(API docs available at http://localhost:3000/docs)
