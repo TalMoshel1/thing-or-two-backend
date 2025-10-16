@@ -11,6 +11,9 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY src ./src
 COPY client ./client
+
+RUN npm install --legacy-peer-deps
+
 RUN npm run build
 
 FROM base AS prod

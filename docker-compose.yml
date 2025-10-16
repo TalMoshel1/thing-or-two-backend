@@ -1,33 +1,48 @@
+version: "3.9"
+
 services:
   db:
     image: postgres:16-alpine
     container_name: music_postgres
-    env_file: .env.db
+    restart: always
     ports:
-      - '5432:5432'
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     volumes:
       - ./db-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres || exit 1"]
       interval: 5s
-      timeout: 5s
-      retries: 10
+      timeout: 3s
+      retries: 25
 
-  api:
-    build: .
-    container_name: music_api
-    env_file: .env
-    environment:
-      - NEST_LOG_LEVEL=debug
-      - CSV_FILE=/app/data/Song_list.csv
+  tal-music:
+    image: tal-music:latest
+    container_name: tal_music_app
     depends_on:
       db:
         condition: service_healthy
+    restart: always
     ports:
-      - '3001:3000'
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=postgres
+      - PORT=3000
+      - NODE_ENV=dev
+      - JWT_SECRET=superlongrandomsecret
+      - JWT_EXPIRES=86400
     volumes:
-      - ./data:/app/data:ro
-
-volumes:
-  db-data:
+      - ./data:/app/data
+    command: >
+      sh -c "
+        until nc -z db 5432; do echo '⏳ waiting for db...'; sleep 1; done;
+        node dist/migrate.js || true;
+        node dist/main.js
+      "
