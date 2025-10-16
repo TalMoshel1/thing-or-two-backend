@@ -11,7 +11,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  /** 🔒 Sets secure cookie for JWT */
 
 
   async validateUser(email: string, plainPass: string): Promise<any> {

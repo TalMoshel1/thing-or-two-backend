@@ -11,6 +11,6 @@ export const typeormConfig = (config: ConfigService): TypeOrmModuleOptions => ({
   password: config.get<string>('DB_PASSWORD'),
   database: config.get<string>('DB_NAME'),
   entities: [Song, User],
-  synchronize: true, 
+  synchronize: true,
   logging: config.get('NODE_ENV') !== 'production',
 });

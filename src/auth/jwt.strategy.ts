@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-// extract token from cookie named 'jwt' or from Authorization header
 const cookieExtractor = (req: any) => {
   let token = null;
   if (req && req.cookies && req.cookies['jwt']) {

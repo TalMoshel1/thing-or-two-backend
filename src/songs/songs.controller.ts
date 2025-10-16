@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { SongsService } from './songs.service';
-// import { Public } from '../auth/public.decorator';
 
 @ApiTags('songs')
 @ApiBearerAuth()
@@ -11,7 +10,6 @@ export class SongsController {
 
   @Post('import')
   async import() {
-    console.log('🔥 Controller import() reached');
 
     const path = process.env.CSV_FILE || '/app/data/Song_list.csv';
     return this.songs.importFromCsv(path);

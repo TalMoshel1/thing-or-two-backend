@@ -14,17 +14,14 @@ export class BootstrapService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap() {
     const csvPath = process.env.CSV_FILE || '/app/data/Song_list.csv';
-    this.logger.log('🚀 Starting CSV import process...');
 
     try {
-      this.logger.log('🧹 Truncating songs table...');
-      await this.dataSource.query('TRUNCATE TABLE songs RESTART IDENTITY CASCADE');
-      this.logger.log('✅ Songs table truncated successfully.');
+      await this.dataSource.query(
+        'TRUNCATE TABLE songs RESTART IDENTITY CASCADE',
+      );
 
       const result = await this.songsService.importFromCsv(csvPath);
-      this.logger.log('✅ CSV import complete: ' + JSON.stringify(result));
     } catch (err) {
-      this.logger.error('⚠️ CSV import failed:', err.message);
     }
   }
 }

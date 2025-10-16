@@ -20,7 +20,7 @@ import { join } from 'path';
       useFactory: typeormConfig,
     }),
 
-  ServeStaticModule.forRoot({
+    ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
 
@@ -29,9 +29,6 @@ import { join } from 'path';
     AuthModule,
     BootstrapModule,
   ],
-  providers: [
-    { provide: APP_GUARD, useClass: JwtAuthGuard },
-  ],
+  providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }],
 })
 export class AppModule {}
-
